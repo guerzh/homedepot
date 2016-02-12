@@ -44,7 +44,7 @@ def get_other_brand_present(search_terms, product_title, brands):
     else:
         return 0
     
-skip = 10
+skip = 1
 
 train_learn_x = zeros((len(train.index)/skip,6))
 train_learn_y = zeros((len(train.index)/skip,1))
@@ -104,5 +104,21 @@ regr.fit(train_learn_x, train_learn_y)
 print 'Coefficients: \n', regr.coef_
 #the coefficients for the eight features computed in lines 52-59
 
-print "RMSE: %f" % sqrt(mean((regr.predict(train_learn_x) - train_learn_y) ** 2))  #.505
-print "Baseline: %f" % sqrt(mean((mean(train_learn_y) - train_learn_y) ** 2))      #.521
+print "RMSE: %f" % sqrt(mean((regr.predict(train_learn_x) - train_learn_y) ** 2)) 
+print "Baseline: %f" % sqrt(mean((mean(train_learn_y) - train_learn_y) ** 2))      
+
+from sklearn import cross_validation
+import time
+
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(train_learn_x, train_learn_y, test_size=0.4, random_state=int(time.time()))
+regr = linear_model.Ridge(alpha=.00001)
+regr.fit(X_train, y_train)
+print "Train RMSE: %f" % sqrt(mean((regr.predict(X_train) - y_train) ** 2))  
+print "Train Baseline: %f" % sqrt(mean((mean(y_train) - X_train) ** 2))      
+print "Test RMSE: %f" % sqrt(mean((regr.predict(X_test) - y_test) ** 2))  
+print "Test Baseline: %f" % sqrt(mean((mean(y_test) - X_test) ** 2))      
+
+
+
+
+
