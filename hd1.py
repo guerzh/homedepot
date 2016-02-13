@@ -48,7 +48,7 @@ def get_features(test=False, skip=1):
     train = train.merge(descs, on=["product_uid"])#.merge(attr, on="product_uid")
     
     
-    train_learn_x = zeros((len(train.index)/skip,12))
+    train_learn_x = zeros((len(train.index)/skip,13))
     train_learn_y = zeros((len(train.index)/skip,1))
     
     brands = set([a.split()[0].lower() for a in train["product_title"]])
@@ -87,6 +87,10 @@ def get_features(test=False, skip=1):
                                     get_cosine_similarity(search_terms, product_desc[:3]),
                                     get_cosine_similarity(search_terms, product_title[:10]),
                                     get_cosine_similarity(search_terms, product_desc[:10]),
+                                    log(1+len(search_terms)),
+                                    len(search_terms),
+                                    log(1+len(product_desc)),
+                                    len(product_desc)
                                     ))
             if not test:
                 relevance = float(line["relevance"])
